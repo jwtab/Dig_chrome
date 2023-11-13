@@ -18,6 +18,7 @@ using namespace std;
    homepage相关.
 */
 void parse_homepage_Preferences(const char * pre_path);
+void hmac_data_verify(const char * data,const char * key_data,int key_len);
 
 int
 main(int argc,char **argv)
@@ -72,6 +73,11 @@ cJSON * _chrome_get_json(const char * json_path)
 	f = NULL;
 
 	return root;
+}
+
+void hmac_data_verify(const char * data,const char * key_data,int key_len)
+{
+
 }
 
 void parse_homepage_Preferences(const char * pre_path)
