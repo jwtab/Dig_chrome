@@ -95,6 +95,8 @@ void hmac_data_verify(const char * data,const char * key_data,int key_len)
 
 void parse_search_Preferences(const char * pre_path)
 {
+   printf("\r\n[[只解析配置文件的,不解析插件的]]\r\n\r\n");
+
    cJSON * root = _chrome_get_json(pre_path);
    cJSON * template_url_data_json = cJSON_GetObjectItem(cJSON_GetObjectItem(root,"default_search_provider_data"),
             "template_url_data");
