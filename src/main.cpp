@@ -15,6 +15,11 @@ using namespace std;
 #include <sqlite3.h>
 
 /*
+   search相关.
+*/
+void parse_search_Preferences(const char * pre_path);
+
+/*
    homepage相关.
 */
 void parse_homepage_Preferences(const char * pre_path);
@@ -28,6 +33,14 @@ main(int argc,char **argv)
 
    printf("======  测试Edge-Hp_MacOS版本   ======\r\n");
    parse_homepage_Preferences("./test/Secure_Preferences.macOS.edge");
+
+   printf("\r\n\r\n");
+
+   printf("======  测试Chrome-Search_MacOS版本   ======\r\n");
+   parse_search_Preferences("./test/Secure_Preferences.macOS.chrome");
+
+   printf("======  测试Edge-Search_MacOS版本   ======\r\n");
+   parse_search_Preferences("./test/Secure_Preferences.macOS.edge");
 
    return 0;
 }
@@ -78,6 +91,30 @@ cJSON * _chrome_get_json(const char * json_path)
 void hmac_data_verify(const char * data,const char * key_data,int key_len)
 {
 
+}
+
+void parse_search_Preferences(const char * pre_path)
+{
+   cJSON * root = _chrome_get_json(pre_path);
+   cJSON * template_url_data_json = cJSON_GetObjectItem(cJSON_GetObjectItem(root,"default_search_provider_data"),
+            "template_url_data");
+   if(template_url_data_json)
+   {
+      cJSON * is_active_json = cJSON_GetObjectItem(template_url_data_json,"is_active");
+      cJSON * url_json = cJSON_GetObjectItem(template_url_data_json,"url");
+
+      printf("[default_search_provider_data.template_url_data.is_active] %d\r\n",is_active_json->valueint);
+      printf("[default_search_provider_data.template_url_data.url] %s\r\n",url_json->valuestring);
+   }
+
+   printf("\r\n{{hmac数据}}\r\n");
+
+   cJSON * macs_json = cJSON_GetObjectItem(cJSON_GetObjectItem(root,"protection"),"macs");
+
+   cJSON * macs_template_url_data = cJSON_GetObjectItem(cJSON_GetObjectItem(macs_json,"default_search_provider_data"),"template_url_data");
+   printf("[protection.macs.default_search_provider_data.template_url_data] %s\r\n",macs_template_url_data->valuestring);
+
+   printf("\r\n");
 }
 
 void parse_homepage_Preferences(const char * pre_path)
@@ -156,4 +193,6 @@ void parse_homepage_Preferences(const char * pre_path)
    {
       printf("[protection.super_mac] %s\r\n",super_mac_json->valuestring);
    }
+
+   printf("\r\n");
 }
